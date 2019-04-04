@@ -1,0 +1,66 @@
+﻿@using Core.SimpleTemp.Application.MenuApp;
+@using System.Text;
+@using System.Collections.Generic;
+@model List<SysMenuDto>
+
+@{
+    var menuList = Model.Where(a => a.Type == 0).ToList();
+    var topMenuList = menuList.Where(a => a.ParentId == Guid.Empty);
+    foreach (var topMenu in topMenuList)
+    {
+        <li class="header">@topMenu.Name</li>
+        StringBuilder sb = new StringBuilder();
+        GetChild(ref sb, menuList.Where(a => a.ParentId == topMenu.Id).ToList(), menuList, true);
+        @Html.Raw(sb)
+    }
+}
+
+@functions{
+    void GetChild(ref StringBuilder sb, List<SysMenuDto> menus, List<SysMenuDto> AllMenus, bool firstFlag)
+    {
+        int count = 0;
+        if (!firstFlag)
+            sb.Append("<ul class='treeview-menu'>");
+        foreach (var m in menus)
+        {
+            List<SysMenuDto> menusChild = AllMenus.Where(a => a.ParentId == m.Id)?.ToList();
+            count = menusChild.Count();
+            sb.AppendFormat("<li class='{0}'>", count > 0 ? "treeview" : "");
+            sb.AppendFormat("<a href='{0}'><i class='{1}'></i><span class='title'>{2}</span>{3}</a>", count > 0 ? "#" : m.Url, m.Icon, m.Name, count > 0 ? "<span class='pull-right-container'>   <i class='fa fa-angle-left pull-right'></i> </span>" : "");
+            firstFlag = false;
+            if (count > 0)
+            {
+                GetChild(ref sb, menusChild, AllMenus, firstFlag);
+            }
+            sb.Append("</li>");
+        }
+        if (!firstFlag)
+            sb.Append("</ul>");
+
+    }
+}
+
+<script>
+    $(window).on('load', function () {
+        $('.sidebar-menu a').each(function () {
+            var aHref = $(this).attr("href")
+            if (aHref != '#' && aHref != "") {
+                var pathname = window.location.pathname;
+                var url = this.href;
+
+                if (url.indexOf(pathname) > 0) {
+                    //一级菜单
+                    if ($(this).parents(".treeview").length <= 0) {
+                        $(this).parent().addClass('active');
+                    } else {
+                        //二级/二级以上菜单
+                        console.log(this);
+                        $(this).parents(".treeview").each(function () {
+                            $(this).addClass('menu-open').addClass("active");
+                        }).addClass("active");
+                    }
+                }
+            }
+        });
+    });
+</script>

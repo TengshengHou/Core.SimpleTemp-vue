@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.CurrentMenu = "Role";
+}
+@using  Core.SimpleTemp.Application.Authorization
+@model Core.SimpleTemp.Application.RoleApp.SysRoleDto
+<div class="row">
+
+
+    <div class="col-md-9">
+        <div id="toolbar">
+            <div class="">
+                <form role="form" id="searchForm" class="form-inline">
+                    <div class="form-group">
+                        <label for="Name">角色名称&nbsp;&nbsp;</label>
+                        <input type="text" asp-for="Name" class="form-control" filter-isFilter="true" filter-action="in" value="" />
+                    </div>
+                    &nbsp;&nbsp;
+                    <button id="btnScreen" type="button" class="btn btn-default">查询</button>
+
+                    <button id="btnAdd" title="" class="btn btn-primary @DepartmentPermission.Department_Edit" type="button" data-original-title="新增功能" data-toggle="tooltip" data-widget="">
+                        <i class="fa fa-plus-circle"></i>&nbsp;&nbsp;新增
+                    </button>
+                    <button id="btnDelete" title="" class="btn btn-danger @DepartmentPermission.Department_DeleteMuti " type="button" data-original-title="删除功能" data-toggle="tooltip" data-widget="">
+                        <i class="fa fa-times"></i>&nbsp;&nbsp;删除
+                    </button>
+
+                </form>
+            </div>
+        </div>
+        <div class="box box-primary  " style="padding-left:10px;padding-right:10px">
+            <table id="table"
+                   data-toolbar="#toolbar"
+                   data-toggle="table"
+                   data-height="660"
+                   data-ajax="ajaxRequest"
+                   data-side-pagination="server"
+                   data-clickToSelect="true"
+                   data-pagination="true"></table>
+        </div>
+
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">功能权限</h3>
+                <div class="pull-right box-tools">
+                    <button id="btnSavePermission" class="btn btn-primary @RolePermission.Role_SavePermission" type="button" data-original-title="保存" data-toggle="tooltip" data-widget="">
+                        <i class="fa fa-save"></i>&nbsp;&nbsp;保存
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div id="treeDiv" class="portlet-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/js/CommonList.js"></script>
+    <script src="~/Views/Role/Index.js"></script>
+}
