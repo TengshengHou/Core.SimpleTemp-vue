@@ -10,6 +10,11 @@ namespace Core.SimpleTemp.Common
         //统一用此参数作为滑动时间单位分钟
         //1.票据 2.Cookie 3. SessionStore
         public int TimeOutOfLogin { get; set; }
+
+        public int UserMenusCache_Sliding_Seconds { get; set; }
+
+        public int PagingMaxiLimit { get; set; }
+
         /// <summary>
         /// 管理员登录名
         /// </summary>

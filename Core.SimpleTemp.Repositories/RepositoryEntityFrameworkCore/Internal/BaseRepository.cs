@@ -34,18 +34,21 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
         }
 
 
-        public virtual IQueryable<TEntity> QueryBase()
+        public virtual IQueryable<TEntity> QueryBase(Expression<Func<TEntity, TEntity>> selector = null)
         {
-            return _dbContext.Set<TEntity>();
+            if (selector == null)
+                return _dbContext.Set<TEntity>();
+            else
+                return _dbContext.Set<TEntity>().Select(selector);
         }
 
         /// <summary>
         /// 获取实体集合
         /// </summary>
         /// <returns></returns>
-        public virtual Task<List<TEntity>> GetAllListAsync()
+        public virtual Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, TEntity>> selector = null)
         {
-            return QueryBase().AsNoTracking().ToListAsync();
+            return QueryBase(selector).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -53,9 +56,9 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
-        public virtual Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> selector = null)
         {
-            return QueryBase().Where(predicate).AsNoTracking().ToListAsync();
+            return QueryBase(selector).Where(predicate).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -63,9 +66,9 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
         /// </summary>
         /// <param name="id">实体主键</param>
         /// <returns></returns>
-        public virtual Task<TEntity> GetAsync(TPrimaryKey id)
+        public virtual Task<TEntity> GetAsync(TPrimaryKey id, Expression<Func<TEntity, TEntity>> selector = null)
         {
-            return QueryBase().FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
+            return QueryBase(selector).FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
         }
 
         /// <summary>
@@ -73,9 +76,9 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
-        public virtual Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> selector = null)
         {
-            return QueryBase().FirstOrDefaultAsync(predicate);
+            return QueryBase(selector).FirstOrDefaultAsync(predicate);
         }
 
         /// <summary>
@@ -161,13 +164,15 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
         {
             return _dbContext.SaveChangesAsync();
         }
+
+
     }
-   
+
     /// <summary>
     /// 主键为Guid 的指定仓储
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public abstract class BaseRepository<TDbContext, TEntity> : BaseRepository<TDbContext, TEntity, Guid> where TEntity : Entity where TDbContext : DbContext
+    public abstract class BaseRepository<TDbContext, TEntity> : BaseRepository<TDbContext, TEntity, Guid> where TEntity : Entity, new() where TDbContext : DbContext
     {
         public BaseRepository(TDbContext dbContext) : base(dbContext)
         {
@@ -179,7 +184,7 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
     /// 主键为Guid 的默认仓储库
     /// </summary>
     /// <typeparam name="TEntity">实体类型</typeparam>
-    public abstract class BaseRepository<TEntity> : BaseRepository<CoreDBContext, TEntity> where TEntity : Entity
+    public abstract class BaseRepository<TEntity> : BaseRepository<CoreDBContext, TEntity> where TEntity : Entity, new()
     {
         public BaseRepository(CoreDBContext dbContext) : base(dbContext)
         {

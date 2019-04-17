@@ -1,0 +1,44 @@
+<html>
+<head>
+  <script src="../js/initBaseStaticFiles.js"></script>
+</head>
+<script>
+</script>
+
+<body style="margin:0px">
+  <div id="app">
+    <el-header background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
+      style="text-align: right; font-size: 12px">
+      <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+      </el-radio-group>
+      <el-dropdown>
+        <i class="el-icon-setting" style="margin-right: 15px"></i>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>查看</el-dropdown-item>
+          <el-dropdown-item>新增</el-dropdown-item>
+          <el-dropdown-item>删除</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <span>王小虎</span>
+    </el-header>
+    <el-container>
+      <el-container>
+        <my-aside ></my-aside>
+        <el-main>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
+</body>
+<script>
+  var config = {
+    el: '#app',
+    data: {
+      isCollapse: true
+    },
+    methods: {
+
+    }
+  };
+  app = new Vue(config);
+</script>

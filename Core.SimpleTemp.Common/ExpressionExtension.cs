@@ -39,6 +39,8 @@ namespace Core.SimpleTemp.Common
                         if (filterCondition.Value == null)
                             continue;
                         Expression<Func<T, bool>> tempCondition = CreateLambda<T>(filterCondition);
+                        if (tempCondition==null)
+                            continue;
                         if (condition == null)
                         {
                             condition = tempCondition;
@@ -71,7 +73,8 @@ namespace Core.SimpleTemp.Common
             var constant = Expression.Constant(filterCondition.Value);//创建常数
             //MemberExpression
             Expression member = GetParameter(parameter, filterCondition.Field);
-
+            if (member == null)
+                return null;
 
             if ("=".Equals(filterCondition.Action))
             {
@@ -194,7 +197,12 @@ namespace Core.SimpleTemp.Common
                 member = curr;
                 i++;
             }
-            return member;
+            //安全标签校验
+            if (member.Member.CustomAttributes.Any(a => a.AttributeType == typeof(SafetyFilterAttribute)))
+            {
+                return member;
+            }
+            return null;
         }
 
     }

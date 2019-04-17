@@ -65,7 +65,7 @@ namespace Core.SimpleTemp.Application.MenuApp
                 var jsonWriter = new JsonTextWriter(stringWriter);
                 jsonSerializer.Serialize(jsonWriter, ret);
 
-                await _distributedCache.SetStringAsync(checheKey, stringWriter.ToString(), new DistributedCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes(5) });
+                await _distributedCache.SetStringAsync(checheKey, stringWriter.ToString(), new DistributedCacheEntryOptions() { SlidingExpiration = TimeSpan.FromSeconds(_webAppOptions.UserMenusCache_Sliding_Seconds) });
             }
             else
             {

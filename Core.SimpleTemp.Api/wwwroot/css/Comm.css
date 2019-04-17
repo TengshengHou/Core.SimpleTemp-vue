@@ -1,0 +1,15 @@
+
+.el-header {
+    background-color: #409EFF;
+    color: #fff;
+    line-height: 60px;
+}
+
+.el-aside {
+    color: #fff;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    height: 100%;
+}

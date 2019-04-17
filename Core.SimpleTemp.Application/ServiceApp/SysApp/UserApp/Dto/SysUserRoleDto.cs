@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.SimpleTemp.Application.RoleApp;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +8,9 @@ namespace Core.SimpleTemp.Application.UserApp
     public class SysUserRoleDto
     {
         public Guid SysUserId { get; set; }
+        
+
         public Guid SysRoleId { get; set; }
+        public SysRoleDto SysRole { get; set; }
     }
 }

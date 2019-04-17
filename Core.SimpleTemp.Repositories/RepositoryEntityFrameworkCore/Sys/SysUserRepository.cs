@@ -4,6 +4,7 @@ using Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -26,13 +27,15 @@ namespace Core.SimpleTemp.Repositories.RepositoryEntityFrameworkCore.Sys
         public async Task<SysUser> FindUserForLoginAsync(string userName, string Pwd)
         {
             var user = await FirstOrDefaultAsync(u => u.LoginName.Equals(userName) && u.Password.Equals(Pwd));
-
             return user;
         }
 
-        public override IQueryable<SysUser> QueryBase()
+        public override IQueryable<SysUser> QueryBase(Expression<Func<SysUser, SysUser>> selector = null)
         {
-            return _dbContext.SysUser.Include(u => u.UserRoles);
+
+            Expression<Func<SysUserRole, SysRole>> expression = a => a.SysRole;
+            return base.QueryBase(null).Include(u => u.UserRoles).ThenInclude(expression);
+            //return _dbContext.SysUser.Include(u => u.UserRoles);
         }
 
         public Task<List<Guid>> FindUserRoleAsync(Guid userId)

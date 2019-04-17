@@ -19,34 +19,34 @@ namespace Core.SimpleTemp.Repositories.IRepositories
     public partial interface IRepository<TEntity, TPrimaryKey> where TEntity : Entity<TPrimaryKey>
     {
 
-        IQueryable<TEntity> QueryBase();
+        IQueryable<TEntity> QueryBase(Expression<Func<TEntity, TEntity>> selector = null);
 
         /// <summary>
         /// 获取实体集合
         /// </summary>
         /// <returns></returns>
-        Task<List<TEntity>> GetAllListAsync();
+        Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, TEntity>> selector = null);
 
         /// <summary>
         /// 根据lambda表达式条件获取实体集合
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
-        Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<List<TEntity>> GetAllListAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> selector = null);
 
         /// <summary>
         /// 根据主键获取实体
         /// </summary>
         /// <param name="id">实体主键</param>
         /// <returns></returns>
-        Task<TEntity> GetAsync(TPrimaryKey id);
+        Task<TEntity> GetAsync(TPrimaryKey id, Expression<Func<TEntity, TEntity>> selector = null);
 
         /// <summary>
         /// 根据lambda表达式条件获取单个实体
         /// </summary>
         /// <param name="predicate">lambda表达式条件</param>
         /// <returns></returns>
-        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> selector = null);
 
         /// <summary>
         /// 新增实体

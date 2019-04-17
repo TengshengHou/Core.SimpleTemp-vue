@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Core.SimpleTemp.Application
 {
@@ -29,13 +30,16 @@ namespace Core.SimpleTemp.Application
         IDistributedCache _distributedCache;
         ISysLoginLogAppService _sysLoginLogAppService;
         readonly WebAppOptions _webAppOptions;
-        public SysLoginService(ISysUserRepository sysUserRepository, ISysMenuAppService sysMenuAppService, IDistributedCache distributedCache, ISysLoginLogAppService sysLoginLogAppService, IOptionsMonitor<WebAppOptions> webAppOptions)
+        IHttpContextAccessor _httpContextAccessor;
+        
+        public SysLoginService(ISysUserRepository sysUserRepository, ISysMenuAppService sysMenuAppService, IDistributedCache distributedCache, ISysLoginLogAppService sysLoginLogAppService, IOptionsMonitor<WebAppOptions> webAppOptions, IHttpContextAccessor httpContextAccessor)
         {
             _sysUserRepository = sysUserRepository;
             _sysMenuAppService = sysMenuAppService;
             _distributedCache = distributedCache;
             _sysLoginLogAppService = sysLoginLogAppService;
             _webAppOptions = webAppOptions.CurrentValue;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -156,6 +160,30 @@ namespace Core.SimpleTemp.Application
             return _sysMenuAppService.GetMenusAndFunctionByUserAsync(sysUserDto);
         }
 
+        /// <summary>
+        /// 获取当前票据用户菜单和方法信息
+        /// </summary>
+        /// <param name="sysUserDto"></param>
+        /// <returns></returns>
+        public async Task<List<SysMenuDto>> GetMenusAndFunctionByCurrentUserAsync()
+        {
+            var nameIdentifierClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            var id = nameIdentifierClaim.Value;
+            var userDto = new SysUserDto() { Id = Guid.Parse(id), LoginName = _httpContextAccessor.HttpContext.User.Identity.Name };
+            var menus = await GetMenusAndFunctionByUserAsync(userDto);
+            return menus;
+        }
 
+        /// <summary>
+        /// 仅获取当前票据用户菜单信息
+        /// </summary>
+        /// <param name="sysUserDto"></param>
+        /// <returns></returns>
+        public async Task<List<SysMenuDto>> GetMenusByCurrentUserAsync()
+        {
+            var menusAndFunctions = await this.GetMenusAndFunctionByCurrentUserAsync();
+            menusAndFunctions = menusAndFunctions.Where(m => m.Type == 0).ToList();
+            return menusAndFunctions;
+        }
     }
 }

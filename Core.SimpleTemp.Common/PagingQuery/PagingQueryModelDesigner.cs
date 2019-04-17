@@ -9,9 +9,9 @@ namespace Core.SimpleTemp.Common.PagingQuery
         public PagingQueryModelDesigner()
         {
         }
-        public void Build(IPagingQueryModelBuild<TEntity> pagingQueryModelBuild)
+        public  void Build(IPagingQueryModelBuild<TEntity> pagingQueryModelBuild, FilterPagingQueryModel<TEntity> filterPagingQueryModel)
         {
-            pagingQueryModelBuild.MakePagingQueryModel();
+            pagingQueryModelBuild.MakePagingQueryModel(filterPagingQueryModel);
         }
     }
 }

@@ -57,6 +57,6 @@ namespace Core.SimpleTemp.Entitys
         /// <summary>
         /// 包含用户
         /// </summary>
-        public virtual ICollection<SysUser> Users { get; set; }
+        //public virtual ICollection<SysUser> Users { get; set; }
     }
 }

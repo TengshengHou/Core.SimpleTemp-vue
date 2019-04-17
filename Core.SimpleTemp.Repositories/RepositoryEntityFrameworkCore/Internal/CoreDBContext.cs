@@ -1,4 +1,5 @@
-﻿using Core.SimpleTemp.Entitys;
+﻿using Core.SimpleTemp.Common;
+using Core.SimpleTemp.Entitys;
 using Core.SimpleTemp.Entitys.Sys;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +29,17 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+    
             //UserRole组合主键
-            modelBuilder.Entity<SysUserRole>()
-              .HasKey(ur => new { ur.SysUserId, ur.SysRoleId });
+            var v = modelBuilder.Entity<SysUserRole>();
+            v.HasKey(ur => new { ur.SysUserId, ur.SysRoleId });
+
+            var v2 = modelBuilder.Entity<SysUser>();
+            v2.RemoeForeignKey("SysDepartmentId");
+
+            var v3 = modelBuilder.Entity<SysUserRole>();
+            v3.RemoeForeignKey("SysUserId");
+            v3.RemoeForeignKey("SysRoleId");
 
             //RoleMenu组合主键
             modelBuilder.Entity<SysRoleMenu>()
@@ -38,6 +47,12 @@ namespace Core.SimpleTemp.Repository.RepositoryEntityFrameworkCore.Internal
 
             //启用Guid主键类型扩展
             modelBuilder.HasPostgresExtension("uuid-ossp");
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
     }
 

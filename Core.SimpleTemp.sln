@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.SimpleTemp.Mvc", "Core.SimpleTemp.Mvc\Core.SimpleTemp.Mvc.csproj", "{F4E7CF39-F321-4B03-9EB8-58691DC2FBA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.SimpleTemp.Api", "Core.SimpleTemp.Api\Core.SimpleTemp.Api.csproj", "{F4E7CF39-F321-4B03-9EB8-58691DC2FBA4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.SimpleTemp.Repositories", "Core.SimpleTemp.Repositories\Core.SimpleTemp.Repositories.csproj", "{B55571B5-5FE8-4ED7-A2D5-9EEB0214D9C4}"
 EndProject

@@ -1,0 +1,264 @@
+<html>
+
+<head>
+  <script src="../js/initBaseStaticFiles.js"></script>
+</head>
+<script>
+</script>
+
+<body style="margin:0px">
+  <div id="app">
+    <el-header background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
+      style="text-align: right; font-size: 12px">
+      <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+      </el-radio-group>
+      <el-dropdown>
+        <i class="el-icon-setting" style="margin-right: 15px"></i>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>查看</el-dropdown-item>
+          <el-dropdown-item>新增</el-dropdown-item>
+          <el-dropdown-item>删除</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <span>王小虎</span>
+    </el-header>
+    <el-container>
+      <el-container>
+        <my-aside></my-aside>
+        <el-main>
+          <!-- 查询条件 -->
+          <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form-item label="loginName">
+              <el-input v-model="formInline.loginName.Value" placeholder="loginName"></el-input>
+            </el-form-item>
+            <el-form-item label="name">
+              <el-input v-model="formInline.name.Value" placeholder="name"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onQuery">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="dialogVisible = true">添加</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onDelete">删除</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="Get">修改</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- 列表 -->
+          <el-table :data="tableData" row-key="Id" @selection-change="handleSelectionChange" stripe
+            style="width:100%;height:500px">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column prop="loginName" label="loginName" width="180">
+            </el-table-column>
+            <el-table-column prop="name" label="name" width="180">
+            </el-table-column>
+            <el-table-column prop="lastUpdate" label="lastUpdate">
+            </el-table-column>
+          </el-table>
+          <el-pagination layout="prev, pager, next" @current-change="currentChange" :total="total">
+          </el-pagination>
+
+
+        </el-main>
+      </el-container>
+    </el-container>
+
+    <!-- 添加dialog -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="40%">
+      <el-tabs v-model="activeName2" type="card">
+        <el-tab-pane label="用户管理" name="first">
+
+          <el-form :model="userFrom" status-icon :rules="rules2" ref="ruleForm2" label-width="100px">
+            <el-form-item label="loginName" prop="loginName">
+              <el-input type="text" v-model="userFrom.loginName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="name" prop="name">
+              <el-input type="text" v-model="userFrom.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="password" prop="password">
+              <el-input type="password" v-model="userFrom.password" autocomplete="off"></el-input>
+            </el-form-item>
+
+          </el-form>
+
+        </el-tab-pane>
+        <el-tab-pane label="角色管理" name="third">
+          <el-transfer v-model="userFrom.rolesId" :titles="['待选角色','已选角色']" :data="AllRoleList"></el-transfer>
+        </el-tab-pane>
+      </el-tabs>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm('ruleForm2')">确 定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</body>
+<script>
+  var validate = (rule, value, callback) => {
+    if (value === '') {
+      callback(new Error('必填项'));
+    } else {
+      callback();
+    }
+  };
+  var config = {
+    el: '#app',
+    data: {
+      isCollapse: true,
+      tableData: [],
+      tableMultipleSelection: [],
+      total: 0,
+      formInline: {
+        loginName: { Field: "loginName", Value: "", Action: "in", Logic: "AND" },
+        name: { Field: "name", Value: "", Action: "in", Logic: "AND" }
+      },
+      dialogVisible: false,
+      activeName2: "first",
+      AllRoleList: [],
+      userFrom: {
+        id: guidEmpty,
+        loginName: '',
+        name: '',
+        password: '',
+        sysDepartmentId: 'C0962BC1-7627-410C-E435-08D6B33FF0AF',
+        rolesId: [],
+        userRoles: []
+      },
+      rules2: {
+        LoginName: [
+          { validator: validate, trigger: 'blur' }
+        ],
+        Password: [
+          { validator: validate, trigger: 'blur' }
+        ]
+      }
+    },
+    methods: {
+      onQuery: function (val) {
+        this.GetPageData(1);
+      },
+      //保存选中结果
+      handleSelectionChange(val) {
+        console.info(val);
+        this.tableMultipleSelection = val;
+      },
+      onDelete: function (val) {
+        console.info(this.tableMultipleSelection);
+        var delIds = [];
+        for (var item of this.tableMultipleSelection) {
+          delIds.push(item.id);
+        }
+        this.$axios.post('/api/User/DeleteMuti', delIds).then(function (response) {
+          var ajaxModel = response.data
+          var retMessage = '操作成功';
+          //判断是否保存成功
+          if (isSuccess(ajaxModel)) {
+            app.GetPageData(1);
+          } else {
+            retMessage = ajaxModel.message;
+          }
+          app.$message({
+            type: 'error',
+            message: retMessage
+          });
+        })
+      },
+      //Ajax提交数据
+      onSubmitForm: function () {
+        console.log(this.userFrom);
+        this.$axios.post('/api/User/Save', this.userFrom).then(function (response) {
+          var ajaxModel = response.data
+          //判断是否保存成功
+          if (isSuccess(ajaxModel)) {
+            app.GetPageData(1);
+            app.$message({
+              type: 'success',
+              message: "操作成功"
+            });
+          }
+          //关闭DDialog窗口
+          app.dialogVisible = false
+        })
+      },
+      submitForm: function (formName) {
+        //验证
+        this.$refs[formName].validate((valid) => {
+          //验证通过
+          if (valid) {
+            //处理提交数据
+            this.userFrom.userRoles = [];
+            for (var item of this.userFrom.rolesId) {
+              this.userFrom.userRoles.push({ SysUserId: this.userFrom.id, SysRoleId: item });
+            }
+            //提交数据
+            this.onSubmitForm();
+          } else {
+            //验证失败
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      Get: function () {
+
+        if (this.tableMultipleSelection.length == 0) {
+          app.$message({
+            type: 'error',
+            message: "至少选择一条数据"
+          });
+          return;
+        }
+        if (this.tableMultipleSelection.length > 1) {
+          app.$message({
+            type: 'error',
+            message: "请选择一条数据"
+          });
+          return;
+        }
+        var model = this.tableMultipleSelection[0];
+        this.$axios.get(`/api/User/get?id=${model.id}`).then(function (response) {
+          var ajaxModel = response.data;
+          app.userFrom = ajaxModel.data;
+          console.log("12312");
+          console.log(ajaxModel.data);
+          app.dialogVisible = true;
+        })
+
+      },
+      //分页数修改触发事件
+      currentChange: function (indexValue) {
+        this.GetPageData(indexValue);
+      },
+      GetPageData: function (currentIndex) {
+        //
+        var formData = new FormData();
+        formData.append('offset', (currentIndex - 1) * 10);
+        formData.append('Limit', 10);
+        formData.append('filterConditionList', JSON.stringify([this.formInline.loginName, this.formInline.name]));
+        //var a={"offset":0,"Limit":10}
+        var currObj = this;
+        this.$axios.post('/api/User/GetList', formData).then(function (response) {
+          var ajaxModel = response.data
+          currObj.tableData = ajaxModel.data.pageData
+          currObj.total = ajaxModel.data.rowCount;
+        })
+      },
+      //获取所有角色信息
+      GetAllRoleList: function () {
+        var currObj = this;
+        this.$axios.get('/api/User/GetAllRoleList').then(function (response) {
+          var ajaxModel = response.data
+          currObj.AllRoleList = ajaxModel.data;
+        })
+      }
+    }, created: function () {
+      this.GetPageData(1);
+      this.GetAllRoleList();
+    }
+  };
+  app = new Vue(config);
+</script>

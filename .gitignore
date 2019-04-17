@@ -32,3 +32,5 @@ Core.SimpleTemp.Application/bin/
 Core.SimpleTemp.Application/obj/
 Core.SimpleTemp.Common/bin/
 .vscode/
+Core.SimpleTemp.Api/obj/
+Core.SimpleTemp.Api/bin/

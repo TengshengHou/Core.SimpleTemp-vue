@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Core.SimpleTemp.Entitys;
 using Core.SimpleTemp.Application.MenuApp;
 using Core.SimpleTemp.Application.RoleApp;
 using Core.SimpleTemp.Application.UserApp;
-using Core.SimpleTemp.Entitys.Script;
-using Core.SimpleTemp.Application.ServiceApp.ScriptApp;
+using Core.SimpleTemp.Entitys;
+
 
 namespace Core.SimpleTemp.Application
 {
@@ -34,12 +33,7 @@ namespace Core.SimpleTemp.Application
                 cfg.CreateMap<SysUserRoleDto, SysUserRole>();
                 #endregion
 
-                #region 业务
-                cfg.CreateMap<ScriptDetails, ScriptDetailsDto>();
-                cfg.CreateMap<ScriptDetailsDto, ScriptDetails>();
-                cfg.CreateMap<Script, ScriptDto>();
-                cfg.CreateMap<ScriptDto, Script>();
-                #endregion
+              
 
             });
         }

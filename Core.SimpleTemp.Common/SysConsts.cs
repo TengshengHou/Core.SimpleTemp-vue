@@ -13,7 +13,7 @@ namespace Core.SimpleTemp.Common
     {
         public const string AJAX_RESULT_SUCCESS = "Success";
         public const string AJAX_RESULT_FAILD = "Faild";
-
+        public const int PAGING_MAXI_LIMIT = 100;
 
         #region CacheKey
 

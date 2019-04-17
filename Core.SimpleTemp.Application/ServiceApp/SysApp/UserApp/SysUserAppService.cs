@@ -19,6 +19,7 @@ namespace Core.SimpleTemp.Application.UserApp
         public SysUserAppService(ISysUserRepository repository, IOptionsMonitor<WebAppOptions> webAppOptions) : base(repository)
         {
             _webAppOptions = webAppOptions.CurrentValue;
+            
         }
 
         public async Task<IPageModel<SysUserDto>> GetUserByDepartmentAsync(Guid departmentId, int startPage, int pageSize)
@@ -56,6 +57,7 @@ namespace Core.SimpleTemp.Application.UserApp
         public Task<SysUserRole> FindFirstUserRoleByRoleIdsAsync(Guid[] roleIds)
         {
             return _repository.FindFirstUserRoleByRoleIdsAsync(roleIds);
+            
         }
     }
 }
